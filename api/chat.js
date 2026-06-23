@@ -1,10 +1,10 @@
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS headers first
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight requests
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages, model = 'claude-opus-4-8', max_tokens = 1024 } = req.body;
+    const { messages, model = 'claude-opus-4-8', max_tokens = 1024, system } = req.body;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -33,6 +33,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model,
         max_tokens,
+        system,
         messages
       })
     });
